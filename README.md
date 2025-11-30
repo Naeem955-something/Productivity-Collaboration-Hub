@@ -81,13 +81,9 @@ Here are the **15 major features** implemented/planned for the project:
 
 ```
 /frontend
-    /src
         
 /backend
-    /src/main/java/com/projecthub
-        
-    /src/main/resources
-        application.properties
+
 ```
 
 ---
