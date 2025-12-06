@@ -1,10 +1,10 @@
-# 🚀 Productivity & Collaboration Hub
+ 🚀 Productivity & Collaboration Hub
 
 *A unified project management and real-time collaboration platform built with React & Spring Boot.*
 
 ---
 
-## 📌 Overview
+ 📌 Overview
 
 The **Productivity & Collaboration Hub** is an all-in-one system that combines project management tools with real-time team collaboration features. It brings together Kanban boards, Gantt charts, collaborative editing, whiteboards, chat, analytics, and automated notifications—making teamwork faster, smarter, and more interactive.
 
@@ -12,7 +12,7 @@ Inspired by Notion, Trello, Slack, and Miro, this platform showcases modern soft
 
 ---
 
-## 🎯 Core Objectives
+🎯 Core Objectives
 
 * Build a **visually rich**, highly interactive application.
 * Demonstrate **REST APIs, networking (WebSockets), and multithreading**.
@@ -21,11 +21,11 @@ Inspired by Notion, Trello, Slack, and Miro, this platform showcases modern soft
 
 ---
 
-## 🛠️ Features
+🛠️ Features
 
 Here are the **15 major features** implemented/planned for the project:
 
-### 🔷 Collaboration
+ 🔷 Collaboration
 
 * **Interactive Whiteboard** (drawing, shapes, sticky notes)
 * **Real-Time Team Chat** using WebSockets
@@ -33,7 +33,7 @@ Here are the **15 major features** implemented/planned for the project:
 * **Screen Sharing / Presentation Mode (Simulated)**
 * **Audio Call Simulation UI**
 
-### 🔶 Project & Productivity Tools
+ 🔶 Project & Productivity Tools
 
 * **Kanban Task Board (CRUD)**
 * **Gantt Chart Project Planner**
@@ -42,7 +42,7 @@ Here are the **15 major features** implemented/planned for the project:
 * **File Storage & Versioning**
 * **Whiteboard & Report Export (PDF/PNG)**
 
-### 🔺 System & Backend Features
+ 🔺 System & Backend Features
 
 * **Automated Notifications & Alerts** (Java threads)
 * **Daily Summary Generator**
@@ -51,16 +51,15 @@ Here are the **15 major features** implemented/planned for the project:
 
 ---
 
-## 🧱 Tech Stack
-
-### **Frontend**
+ 🧱 Tech Stack
+ **Frontend**
 
 * React.js
 * TailwindCSS
 * Axios
 * Zustand / Redux (optional)
 
-### **Backend**
+ **Backend**
 
 * Spring Boot
 * REST APIs
@@ -69,7 +68,7 @@ Here are the **15 major features** implemented/planned for the project:
 * MySQL / PostgreSQL
 * JPA / Hibernate
 
-### **Other Tools**
+ **Other Tools**
 
 * Git & GitHub
 * Postman
@@ -77,7 +76,7 @@ Here are the **15 major features** implemented/planned for the project:
 
 ---
 
-## 📂 Project Structure
+ 📂 Project Structure
 
 ```
 /frontend
@@ -89,7 +88,7 @@ Here are the **15 major features** implemented/planned for the project:
 ---
 
 
-## 👥 Team Members
+ 👥 Team Members
 
 * Member 1: https://github.com/uzzal1312 
 * Member 2: https://github.com/akash209uiu
@@ -99,19 +98,19 @@ Here are the **15 major features** implemented/planned for the project:
 
 ---
 
-## 📜 License
+ 📜 License
 
 This project is for academic purposes under United International University’s AOOP course.
 
 ---
 
-## ⭐ Contributions
+ ⭐ Contributions
 
 All team members are added as collaborators.
 
 ---
 
-## 📧 Contact
+ 📧 Contact
 
 For any questions or clarifications, reach the team at:
 udas2310198@bscse.uiu.ac.bd
