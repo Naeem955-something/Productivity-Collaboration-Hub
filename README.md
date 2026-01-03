@@ -79,11 +79,54 @@ Here are the **15 major features** implemented/planned for the project:
  📂 Project Structure
 
 ```
-/frontend
-        
-/backend
-
+productivity-collaboration-hub/
+├── frontend/          # React application
+├── backend/           # Spring Boot application
+├── docs/              # Documentation
+├── .gitignore         # Git ignore rules
+├── CONTRIBUTING.md    # Contribution guidelines
+└── README.md          # This file
 ```
+
+---
+
+ 🚀 Getting Started
+
+## Prerequisites
+
+- Node.js (v16 or higher)
+- Java 17
+- Maven
+
+## Running the Frontend
+
+1. Navigate to the frontend directory:
+   ```
+   cd frontend
+   ```
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Start the development server:
+   ```
+   npm start
+   ```
+   The app will run on http://localhost:3000
+
+## Running the Backend
+
+1. Navigate to the backend directory:
+   ```
+   cd backend
+   ```
+2. Run the Spring Boot application:
+   ```
+   mvn spring-boot:run
+   ```
+   The backend will start on http://localhost:8080
+
+   Test the health endpoint: http://localhost:8080/api/health
 
 ---
 
