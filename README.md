@@ -76,7 +76,46 @@ Here are the **15 major features** implemented/planned for the project:
 
 ---
 
- 📂 Project Structure
+ � Getting Started
+
+### Prerequisites
+- Node.js (v16 or higher)
+- Java 17
+- Maven
+- MySQL (or PostgreSQL)
+
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Naeem955-something/Productivity-Collaboration-Hub.git
+   cd Productivity-Collaboration-Hub
+   ```
+
+2. **Frontend Setup:**
+   ```bash
+   cd frontend
+   npm install
+   npm start
+   ```
+   The app will run on `http://localhost:3000`.
+
+3. **Backend Setup:**
+   - Ensure MySQL is running and create a database named `productivity_hub`.
+   - Update `application.properties` with your database credentials if needed.
+   ```bash
+   cd ../backend
+   mvn clean install
+   mvn spring-boot:run
+   ```
+   The backend will run on `http://localhost:8080`.
+
+### Testing
+- Frontend: `npm test`
+- Backend: `mvn test`
+
+---
+
+ �📂 Project Structure
 
 ```
 /frontend
