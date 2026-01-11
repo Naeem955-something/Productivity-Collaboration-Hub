@@ -94,6 +94,7 @@ Here are the **15 major features** implemented/planned for the project:
 * Member 2: https://github.com/akash209uiu
 * Member 3: https://github.com/Naeem955-something
 * Member 4: https://github.com/tahsin049
+*           & https://github.com/tonnii01
 
 
 ---
