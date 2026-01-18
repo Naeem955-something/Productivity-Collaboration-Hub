@@ -1,5 +1,8 @@
 import StatCard from '../components/StatCard'
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis } from 'recharts'
+import { useQuery } from '@tanstack/react-query'
+import { dashboardService } from '../services/dataService'
+import { useAuth } from '../context/AuthContext'
 
 const activity = [
   { name: 'Mon', tasks: 6 },
@@ -16,6 +19,20 @@ const feed = [
 ]
 
 export default function Dashboard() {
+  const { user } = useAuth()
+  const { data: summary, isLoading } = useQuery({
+    queryKey: ['dashboard-summary', user?.id],
+    queryFn: () => dashboardService.getSummary(user?.id)
+  })
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       <div className="grid lg:grid-cols-4 gap-4">
@@ -29,17 +46,17 @@ export default function Dashboard() {
         </div>
         <div className="card p-4">
           <div className="text-sm text-slate-400">Notifications</div>
-          <div className="text-3xl font-semibold">8</div>
-          <div className="text-xs text-primary mt-1">2 unread deadlines</div>
+          <div className="text-3xl font-semibold">{summary?.unreadNotifications || 0}</div>
+          <div className="text-xs text-primary mt-1">{summary?.upcomingDeadlines || 0} upcoming deadlines</div>
           <button className="btn-ghost mt-3 w-full">Open center</button>
         </div>
       </div>
 
       <div className="grid md:grid-cols-4 gap-4">
-        <StatCard title="Tasks" value="128" hint="24 in progress" />
-        <StatCard title="On-track" value="86%" hint="+4% vs last week" />
-        <StatCard title="Focus hours saved" value="18h" hint="Automation & templates" />
-        <StatCard title="Active projects" value="7" hint="3 at risk" />
+        <StatCard title="Tasks" value={summary?.totalTasks?.toString() || '0'} hint={`${summary?.openTasks || 0} in progress`} />
+        <StatCard title="Completed" value={summary?.completedTasks?.toString() || '0'} hint={`${summary?.completionRate || 0}% completion rate`} />
+        <StatCard title="Active projects" value={summary?.activeProjects?.toString() || '0'} hint={`${summary?.totalProjects || 0} total projects`} />
+        <StatCard title="Team members" value={summary?.teamMembers?.toString() || '0'} hint="Collaborators" />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-4">
