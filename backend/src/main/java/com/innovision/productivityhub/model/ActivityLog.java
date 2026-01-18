@@ -20,4 +20,21 @@ public class ActivityLog extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User actor;
+
+    // Explicit getters for troubleshooting
+    public String getAction() {
+        return action;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public String getSeverity() {
+        return severity;
+    }
+
+    public User getActor() {
+        return actor;
+    }
 }
