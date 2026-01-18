@@ -1,6 +1,7 @@
 package com.innovision.productivityhub.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
@@ -23,6 +24,7 @@ public class FileVersion extends BaseEntity {
     private User uploadedBy;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private FileItem fileItem;
 
     // Explicit getter and setter methods (replacing Lombok annotations for Java 25 compatibility)
