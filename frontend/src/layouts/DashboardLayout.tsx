@@ -1,5 +1,5 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
-import { BellIcon, ChartBarIcon, ChatBubbleLeftIcon, Cog6ToothIcon, DocumentTextIcon, FolderIcon, HomeIcon, RectangleStackIcon, Squares2X2Icon, ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import { BellIcon, ChartBarIcon, ChatBubbleLeftIcon, Cog6ToothIcon, DocumentTextIcon, FolderIcon, HomeIcon, RectangleStackIcon, Squares2X2Icon, ArrowRightOnRectangleIcon, Bars3Icon, XMarkIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { useState, useEffect, useRef } from 'react'
 import clsx from 'clsx'
 import { useAuth } from '../context/AuthContext'
