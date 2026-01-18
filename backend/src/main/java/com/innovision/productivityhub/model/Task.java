@@ -1,6 +1,7 @@
 package com.innovision.productivityhub.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -35,9 +36,11 @@ public class Task extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Priority priority = Priority.MEDIUM;
 
+    private LocalDate startDate;
     private LocalDate dueDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private Project project;
 
     @ManyToMany(fetch = FetchType.LAZY)
