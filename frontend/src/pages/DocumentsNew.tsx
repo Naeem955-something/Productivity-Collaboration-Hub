@@ -1,8 +1,10 @@
+// React + React Query + Router + Heroicons imports
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { DocumentTextIcon, PlusIcon, TrashIcon, ClockIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline'
 
+// Document entity interface (matches backend structure)
 interface Document {
   id: number
   title: string
@@ -13,6 +15,7 @@ interface Document {
   archived?: boolean
 }
 
+// DocumentVersion interface (for version history)
 interface DocumentVersion {
   id: number
   versionNumber: number
@@ -22,31 +25,38 @@ interface DocumentVersion {
   changeDescription?: string
 }
 
+// Main Documents page component
 export default function Documents() {
-  const [searchParams] = useSearchParams()
-  const projectId = searchParams.get('projectId')
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
+  const [searchParams] = useSearchParams() // Get query params from URL
+  const projectId = searchParams.get('projectId') // Get current projectId
+  const navigate = useNavigate() // For navigation (if needed)
+  const queryClient = useQueryClient() // React Query client for caching/invalidation
+
+  // State variables for modals and editing
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showVersionHistory, setShowVersionHistory] = useState<number | null>(null)
   const [editingDocId, setEditingDocId] = useState<number | null>(null)
   const [editContent, setEditContent] = useState('')
   const [formData, setFormData] = useState({ title: '', content: '' })
 
-  // Fetch documents
+  // =========================
+  // FETCH DOCUMENTS FROM BACKEND
+  // =========================
   const { data: documents = [], isLoading: docsLoading } = useQuery({
-    queryKey: ['documents', projectId],
+    queryKey: ['documents', projectId], // Cache key for this project
     queryFn: async () => {
       if (!projectId) return []
       const res = await fetch(`http://localhost:8080/api/documents/project/${projectId}`, {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` } // JWT auth
       })
       return res.json()
     },
-    enabled: !!projectId
+    enabled: !!projectId // Only fetch if projectId exists
   })
 
-  // Fetch document versions
+  // =========================
+  // FETCH DOCUMENT VERSIONS
+  // =========================
   const { data: versions = [], isLoading: versionsLoading } = useQuery({
     queryKey: ['documentVersions', showVersionHistory],
     queryFn: async () => {
@@ -56,10 +66,12 @@ export default function Documents() {
       })
       return res.json()
     },
-    enabled: !!showVersionHistory
+    enabled: !!showVersionHistory // Only fetch if version modal is open
   })
 
-  // Create document
+  // =========================
+  // CREATE DOCUMENT
+  // =========================
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
       const res = await fetch(`http://localhost:8080/api/documents`, {
@@ -68,18 +80,20 @@ export default function Documents() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ ...data, projectId: parseInt(projectId || '0') })
+        body: JSON.stringify({ ...data, projectId: parseInt(projectId || '0') }) // Attach projectId
       })
       return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['documents', projectId] })
-      setShowCreateModal(false)
-      setFormData({ title: '', content: '' })
+      queryClient.invalidateQueries({ queryKey: ['documents', projectId] }) // Refresh list
+      setShowCreateModal(false) // Close modal
+      setFormData({ title: '', content: '' }) // Reset form
     }
   })
 
-  // Update document
+  // =========================
+  // UPDATE DOCUMENT
+  // =========================
   const updateMutation = useMutation({
     mutationFn: async ({ docId, content }: { docId: number; content: string }) => {
       const res = await fetch(`http://localhost:8080/api/documents/${docId}`, {
@@ -88,18 +102,20 @@ export default function Documents() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ content, changeDescription: 'Updated content' })
+        body: JSON.stringify({ content, changeDescription: 'Updated content' }) // Track changes
       })
       return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['documents', projectId] })
-      setEditingDocId(null)
+      queryClient.invalidateQueries({ queryKey: ['documents', projectId] }) // Refresh list
+      setEditingDocId(null) // Close editor
       setEditContent('')
     }
   })
 
-  // Delete document
+  // =========================
+  // DELETE DOCUMENT
+  // =========================
   const deleteMutation = useMutation({
     mutationFn: async (docId: number) => {
       const res = await fetch(`http://localhost:8080/api/documents/${docId}`, {
@@ -109,11 +125,13 @@ export default function Documents() {
       return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['documents', projectId] })
+      queryClient.invalidateQueries({ queryKey: ['documents', projectId] }) // Refresh list
     }
   })
 
-  // Restore version
+  // =========================
+  // RESTORE DOCUMENT VERSION
+  // =========================
   const restoreMutation = useMutation({
     mutationFn: async ({ docId, versionNumber }: { docId: number; versionNumber: number }) => {
       const res = await fetch(`http://localhost:8080/api/documents/${docId}/restore/${versionNumber}`, {
@@ -123,11 +141,14 @@ export default function Documents() {
       return res.json()
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['documents', projectId] })
-      setShowVersionHistory(null)
+      queryClient.invalidateQueries({ queryKey: ['documents', projectId] }) // Refresh list
+      setShowVersionHistory(null) // Close version modal
     }
   })
 
+  // =========================
+  // HANDLE CASE: NO PROJECT SELECTED
+  // =========================
   if (!projectId) {
     return (
       <div className="card p-8 text-center">
@@ -137,6 +158,9 @@ export default function Documents() {
     )
   }
 
+  // =========================
+  // HANDLE LOADING STATE
+  // =========================
   if (docsLoading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -145,9 +169,12 @@ export default function Documents() {
     )
   }
 
+  // =========================
+  // MAIN PAGE
+  // =========================
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Header with Create button */}
       <div className="flex items-center justify-between">
         <div>
           <div className="text-2xl font-semibold">Documents</div>
@@ -162,18 +189,17 @@ export default function Documents() {
         </button>
       </div>
 
-      {/* Document List */}
+      {/* =========================
+          DOCUMENT LIST / EDITOR
+      ========================= */}
       {editingDocId ? (
-        /* Document Editor */
+        /* Editing a document */
         <div className="card p-6">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold">
               {documents.find((d: Document) => d.id === editingDocId)?.title}
             </h3>
-            <button
-              onClick={() => setEditingDocId(null)}
-              className="btn-ghost text-sm"
-            >
+            <button onClick={() => setEditingDocId(null)} className="btn-ghost text-sm">
               Close
             </button>
           </div>
@@ -184,10 +210,7 @@ export default function Documents() {
             className="input-primary w-full h-96 font-mono text-sm"
           />
           <div className="flex gap-3 mt-4">
-            <button
-              onClick={() => setEditingDocId(null)}
-              className="btn-ghost flex-1"
-            >
+            <button onClick={() => setEditingDocId(null)} className="btn-ghost flex-1">
               Cancel
             </button>
             <button
@@ -207,22 +230,22 @@ export default function Documents() {
           </div>
         </div>
       ) : documents.length === 0 ? (
+        /* No documents yet */
         <div className="card p-12 text-center">
           <DocumentTextIcon className="w-16 h-16 text-slate-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold mb-2">No Documents Yet</h3>
           <p className="text-slate-400 mb-4">Create your first collaborative document</p>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="btn-primary"
-          >
+          <button onClick={() => setShowCreateModal(true)} className="btn-primary">
             Create Document
           </button>
         </div>
       ) : (
+        /* Render list of documents */
         <div className="grid gap-4">
           {documents.map((doc: Document) => (
             <div key={doc.id} className="card p-4 hover:border-primary/40 transition">
               <div className="flex items-start justify-between">
+                {/* Clickable document title/content */}
                 <div className="flex-1 cursor-pointer hover:text-primary" onClick={() => {
                   setEditingDocId(doc.id)
                   setEditContent(doc.content)
@@ -235,6 +258,8 @@ export default function Documents() {
                     v{doc.version} • {new Date(doc.createdAt).toLocaleDateString()}
                   </div>
                 </div>
+
+                {/* Buttons for history & delete */}
                 <div className="flex gap-2 ml-4">
                   <button
                     onClick={() => setShowVersionHistory(doc.id)}
@@ -260,7 +285,9 @@ export default function Documents() {
         </div>
       )}
 
-      {/* Create Modal */}
+      {/* =========================
+          CREATE DOCUMENT MODAL
+      ========================= */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowCreateModal(false)}>
           <div className="card p-6 max-w-md w-full m-4" onClick={e => e.stopPropagation()}>
@@ -268,7 +295,7 @@ export default function Documents() {
             <form
               onSubmit={e => {
                 e.preventDefault()
-                createMutation.mutate(formData)
+                createMutation.mutate(formData) // Call backend POST
               }}
               className="space-y-4"
             >
@@ -295,18 +322,8 @@ export default function Documents() {
                 />
               </div>
               <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowCreateModal(false)}
-                  className="btn-ghost flex-1"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={createMutation.isPending}
-                  className="btn-primary flex-1"
-                >
+                <button type="button" onClick={() => setShowCreateModal(false)} className="btn-ghost flex-1">Cancel</button>
+                <button type="submit" disabled={createMutation.isPending} className="btn-primary flex-1">
                   {createMutation.isPending ? 'Creating...' : 'Create'}
                 </button>
               </div>
@@ -315,7 +332,9 @@ export default function Documents() {
         </div>
       )}
 
-      {/* Version History Modal */}
+      {/* =========================
+          VERSION HISTORY MODAL
+      ========================= */}
       {showVersionHistory && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowVersionHistory(null)}>
           <div className="card p-6 max-w-2xl w-full max-h-96 m-4 overflow-y-auto" onClick={e => e.stopPropagation()}>
@@ -323,7 +342,7 @@ export default function Documents() {
               <h2 className="text-xl font-bold">Version History</h2>
               <button onClick={() => setShowVersionHistory(null)} className="btn-ghost text-sm">Close</button>
             </div>
-            
+
             {versionsLoading ? (
               <div className="flex items-center justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -342,10 +361,7 @@ export default function Documents() {
                         </div>
                       </div>
                       <button
-                        onClick={() => restoreMutation.mutate({
-                          docId: showVersionHistory,
-                          versionNumber: version.versionNumber
-                        })}
+                        onClick={() => restoreMutation.mutate({ docId: showVersionHistory, versionNumber: version.versionNumber })}
                         disabled={restoreMutation.isPending}
                         className="btn-ghost text-sm flex items-center gap-1"
                       >
