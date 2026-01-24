@@ -4,7 +4,7 @@ import Stomp from 'stompjs'
 
 interface WebSocketMessage {
   id?: number
-  content: string
+  content: stringd
   senderName: string
   senderAvatar?: string
   timestamp: number
