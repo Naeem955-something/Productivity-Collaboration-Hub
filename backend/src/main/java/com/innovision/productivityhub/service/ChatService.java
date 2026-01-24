@@ -1,8 +1,7 @@
 package com.innovision.productivityhub.service;
 
 import com.innovision.productivityhub.model.ChatMessage;
-import com.innovision.productivityhub.model.Project;hi
-    
+import com.innovision.productivityhub.model.Project;
 import com.innovision.productivityhub.model.User;
 import com.innovision.productivityhub.repository.ChatMessageRepository;
 import com.innovision.productivityhub.repository.ProjectRepository;
