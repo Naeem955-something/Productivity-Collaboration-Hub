@@ -100,6 +100,7 @@ CREATE TABLE IF NOT EXISTS goals (
   FOREIGN KEY (team_id) REFERENCES teams(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
 -- Messages table
 CREATE TABLE IF NOT EXISTS messages (
   id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -142,7 +143,6 @@ CREATE TABLE IF NOT EXISTS documents (
   FOREIGN KEY (project_id) REFERENCES projects(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
 -- Files table
 CREATE TABLE IF NOT EXISTS files (
   id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -155,6 +155,7 @@ CREATE TABLE IF NOT EXISTS files (
   storage_path VARCHAR(255),
   FOREIGN KEY (project_id) REFERENCES projects(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 -- File Versions table
 CREATE TABLE IF NOT EXISTS file_versions (
