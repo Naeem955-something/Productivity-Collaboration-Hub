@@ -1,63 +1,38 @@
-package com.innovision.service;
+package com.innovision.controller;
 
-import com.innovision.repository.ProjectRepository;
-import com.innovision.repository.TaskRepository;
-import com.innovision.repository.UserRepository;
-import org.springframework.stereotype.Service;
+import com.innovision.service.ReportService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
 
-@Service
-public class ReportService {
+@RestController
+@RequestMapping("/api/reports")
+@CrossOrigin
+public class ReportController {
 
-    private final ProjectRepository projectRepository;
-    private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
+    private final ReportService reportService;
 
-    public ReportService(ProjectRepository projectRepository,
-                         TaskRepository taskRepository,
-                         UserRepository userRepository) {
-        this.projectRepository = projectRepository;
-        this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
+    public ReportController(ReportService reportService) {
+        this.reportService = reportService;
     }
 
     /**
-     * Overall system report
+     * GET: System-wide report
+     * URL: /api/reports/system
      */
-    public Map<String, Object> generateSystemReport() {
-        Map<String, Object> report = new HashMap<>();
-
-        report.put("date", LocalDate.now());
-        report.put("totalUsers", userRepository.count());
-        report.put("totalProjects", projectRepository.count());
-        report.put("totalTasks", taskRepository.count());
-        report.put("completedTasks", taskRepository.countByStatus("COMPLETED"));
-        report.put("pendingTasks", taskRepository.countByStatus("PENDING"));
-
-        return report;
+    @GetMapping("/system")
+    public ResponseEntity<Map<String, Object>> getSystemReport() {
+        return ResponseEntity.ok(reportService.generateSystemReport());
     }
 
     /**
-     * Project-specific report
+     * GET: Project-specific report
+     * URL: /api/reports/project/{projectId}
      */
-    public Map<String, Object> generateProjectReport(Long projectId) {
-        Map<String, Object> report = new HashMap<>();
-
-        report.put("project", projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found")));
-
-        report.put("totalTasks",
-                taskRepository.countByProjectId(projectId));
-
-        report.put("completedTasks",
-                taskRepository.countByProjectIdAndStatus(projectId, "COMPLETED"));
-
-        report.put("pendingTasks",
-                taskRepository.countByProjectIdAndStatus(projectId, "PENDING"));
-
-        return report;
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<Map<String, Object>> getProjectReport(
+            @PathVariable Long projectId) {
+        return ResponseEntity.ok(reportService.generateProjectReport(projectId));
     }
 }
