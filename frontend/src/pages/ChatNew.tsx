@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useWebSocket } from '../hooks/useWebSocket'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/AuthContext'fd
 import { PaperAirplaneIcon, ChatBubbleLeftIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 
 interface ChatMessage {
