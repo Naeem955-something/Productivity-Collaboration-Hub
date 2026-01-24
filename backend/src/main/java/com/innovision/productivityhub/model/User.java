@@ -43,6 +43,7 @@ public class User extends BaseEntity {
     @JoinTable(name = "team_members",
         joinColumns = @JoinColumn(name = "user_id"),
         inverseJoinColumns = @JoinColumn(name = "team_id"))
+    @JsonIgnore
     private Set<Team> teams = new HashSet<>();
 
     @ManyToMany(mappedBy = "assignees")

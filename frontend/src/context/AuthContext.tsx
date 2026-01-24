@@ -1,39 +1,50 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { userService, User } from '../services/dataService'
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { authService, User } from '../services/authService'
 
-type AuthContextValue = {
+interface AuthContextType {
   user: User | null
-  login: (email?: string, password?: string) => Promise<void>
+  isAuthenticated: boolean
+  login: (token: string, user: User) => void
   logout: () => void
-  setUser: (user: User | null) => void
+  loading: boolean
 }
 
-const AuthContext = createContext<AuthContextValue>({
-  user: null,
-  login: async () => {},
-  logout: () => {},
-  setUser: () => {}
-})
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    userService.getCurrentUser().then(setUser).catch(() => setUser(null))
+    const storedUser = authService.getStoredUser()
+    const token = authService.getToken()
+    if (storedUser && token) {
+      setUser(storedUser)
+    }
+    setLoading(false)
   }, [])
 
-  const login = async () => {
-    const current = await userService.getCurrentUser()
-    setUser(current)
+  const login = (token: string, user: User) => {
+    authService.saveAuth(token, user)
+    setUser(user)
   }
 
-  const logout = () => setUser(null)
+  const logout = () => {
+    authService.logout()
+    setUser(null)
+  }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, setUser }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-export const useAuth = () => useContext(AuthContext)
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within AuthProvider')
+  }
+  return context
+}
