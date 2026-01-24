@@ -8,3 +8,4 @@ public interface GoalRepository extends JpaRepository<Goal, Long> {
     List<Goal> findByOwnerId(Long ownerId);
     List<Goal> findByTeamId(Long teamId);
 }
+
