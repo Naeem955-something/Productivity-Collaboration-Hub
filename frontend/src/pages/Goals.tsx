@@ -58,6 +58,12 @@ export default function Goals() {
         </div>
         <button className="btn-primary" onClick={() => setShowModal(true)}>Create goal</button>
       </div>
+      <div className="grid md:grid-cols-3 gap-4">
+        <HabitCard title="Weekly streak" value="5 days" description="Keep shipping!" />
+        <HabitCard title="Monthly focus" value="72%" description="On track vs target" />
+        <HabitCard title="Deep work" value="14 hrs" description="Logged this week" />
+      </div>
+
       {goals && goals.length > 0 ? (
         <div className="grid md:grid-cols-3 gap-4">
           {goals.map((goal: any) => {
@@ -164,6 +170,15 @@ export default function Goals() {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+function HabitCard({ title, value, description }: { title: string; value: string; description: string }) {
+  return (
+    <div className="card p-4">
+      <div className="text-sm text-slate-400">{title}</div>
+      <div className="text-2xl font-semibold mt-1">{value}</div>
+      <div className="text-xs text-slate-500 mt-1">{description}</div>
     </div>
   )
 }
