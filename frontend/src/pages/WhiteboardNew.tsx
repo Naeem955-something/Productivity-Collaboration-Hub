@@ -1,46 +1,62 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+// Heroicons for toolbar buttons
 import { PaintBrushIcon, TrashIcon, ArrowUturnLeftIcon, PencilIcon } from '@heroicons/react/24/outline'
 
+// Type for drawing points (not fully used yet but can extend for shapes/text)
 interface DrawingPoint {
   x: number
   y: number
-  type: 'line' | 'rect' | 'circle' | 'text'fffs
+  type: 'line' | 'rect' | 'circle' | 'text'
 }
 
 export default function Whiteboard() {
+  // Get projectId from URL query param
   const [searchParams] = useSearchParams()
   const projectId = searchParams.get('projectId')
+
+  // Canvas reference
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  // State to track drawing
   const [isDrawing, setIsDrawing] = useState(false)
+
+  // Selected drawing tool: pen, rect, circle, text
   const [drawTool, setDrawTool] = useState<'pen' | 'rect' | 'circle' | 'text'>('pen')
+
+  // Stroke color and width for drawing
   const [strokeColor, setStrokeColor] = useState('#60a5fa')
   const [strokeWidth, setStrokeWidth] = useState(2)
+
+  // Canvas history for undo functionality
   const [history, setHistory] = useState<ImageData[]>([])
 
+  // Initialize canvas on component mount
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    // Set canvas size to window size
+    // Set canvas size to match container
     canvas.width = canvas.offsetWidth
     canvas.height = canvas.offsetHeight
 
-    // Fill with white background
     const ctx = canvas.getContext('2d')
     if (ctx) {
+      // Fill background with white
       ctx.fillStyle = '#ffffff'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
       ctx.strokeStyle = strokeColor
       ctx.lineWidth = strokeWidth
     }
-  }, [])
+  }, []) // runs once on mount
 
+  // Helper to get 2D context easily
   const getCanvasContext = () => {
     const canvas = canvasRef.current
     return canvas?.getContext('2d')
   }
 
+  // Start drawing when mouse is pressed
   const startDrawing = (e: React.MouseEvent) => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -51,24 +67,28 @@ export default function Whiteboard() {
 
     const ctx = getCanvasContext()
     if (ctx) {
+      // Set stroke styles
       ctx.strokeStyle = strokeColor
       ctx.lineWidth = strokeWidth
       ctx.lineCap = 'round'
       ctx.lineJoin = 'round'
 
-      // Save current state for undo
+      // Save current canvas state for undo
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
       setHistory([...history, imageData])
 
+      // Start pen path
       if (drawTool === 'pen') {
         ctx.beginPath()
         ctx.moveTo(x, y)
       }
     }
 
+    // Mark drawing as active
     setIsDrawing(true)
   }
 
+  // Drawing while mouse moves
   const draw = (e: React.MouseEvent) => {
     if (!isDrawing) return
 
@@ -81,25 +101,29 @@ export default function Whiteboard() {
 
     const ctx = getCanvasContext()
     if (ctx && drawTool === 'pen') {
+      // Draw line from previous point to current
       ctx.lineTo(x, y)
       ctx.stroke()
     }
   }
 
+  // Stop drawing when mouse released
   const stopDrawing = () => {
     setIsDrawing(false)
   }
 
+  // Clear canvas completely
   const clearCanvas = () => {
     const canvas = canvasRef.current
     const ctx = getCanvasContext()
     if (ctx && canvas) {
       ctx.fillStyle = '#ffffff'
       ctx.fillRect(0, 0, canvas.width, canvas.height)
-      setHistory([])
+      setHistory([]) // clear undo history
     }
   }
 
+  // Undo last action using history
   const undo = () => {
     if (history.length === 0) return
 
@@ -107,14 +131,15 @@ export default function Whiteboard() {
     const ctx = getCanvasContext()
     if (ctx && canvas) {
       const newHistory = [...history]
-      const previousState = newHistory.pop()
+      const previousState = newHistory.pop() // get last canvas state
       if (previousState) {
-        ctx.putImageData(previousState, 0, 0)
+        ctx.putImageData(previousState, 0, 0) // restore previous state
       }
       setHistory(newHistory)
     }
   }
 
+  // If no project selected, show info message
   if (!projectId) {
     return (
       <div className="card p-8 text-center">
@@ -126,6 +151,7 @@ export default function Whiteboard() {
 
   return (
     <div className="space-y-4 h-[calc(100vh-200px)] flex flex-col">
+      {/* Header */}
       <div>
         <div className="text-2xl font-semibold">Interactive Whiteboard</div>
         <div className="text-slate-400 text-sm mt-1">Real-time collaborative drawing</div>
@@ -136,7 +162,7 @@ export default function Whiteboard() {
         {/* Tools */}
         <div className="flex items-center gap-2 border-r border-white/10 pr-4">
           <button
-            onClick={() => setDrawTool('pen')}
+            onClick={() => setDrawTool('pen')} // select pen tool
             className={`p-2 rounded ${drawTool === 'pen' ? 'bg-primary text-white' : 'bg-white/10'}`}
             title="Pen"
           >
@@ -144,7 +170,7 @@ export default function Whiteboard() {
           </button>
         </div>
 
-        {/* Colors */}
+        {/* Color picker */}
         <div className="flex items-center gap-2">
           <label className="text-sm text-slate-400">Color:</label>
           <input
@@ -155,7 +181,7 @@ export default function Whiteboard() {
           />
         </div>
 
-        {/* Stroke Width */}
+        {/* Stroke width slider */}
         <div className="flex items-center gap-2 border-l border-white/10 pl-4">
           <label className="text-sm text-slate-400">Width:</label>
           <input
@@ -169,10 +195,10 @@ export default function Whiteboard() {
           <span className="text-xs text-slate-400 w-6">{strokeWidth}px</span>
         </div>
 
-        {/* Actions */}
+        {/* Undo & Clear */}
         <div className="flex items-center gap-2 border-l border-white/10 pl-4 ml-auto">
           <button
-            onClick={undo}
+            onClick={undo} // undo last stroke
             disabled={history.length === 0}
             className="btn-ghost text-sm flex items-center gap-1 disabled:opacity-50"
           >
@@ -180,7 +206,7 @@ export default function Whiteboard() {
             Undo
           </button>
           <button
-            onClick={clearCanvas}
+            onClick={clearCanvas} // clear all strokes
             className="btn-ghost text-sm flex items-center gap-1 text-red-400"
           >
             <TrashIcon className="w-4 h-4" />
@@ -192,11 +218,11 @@ export default function Whiteboard() {
       {/* Canvas */}
       <div className="card flex-1 p-4 overflow-hidden">
         <canvas
-          ref={canvasRef}
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
+          ref={canvasRef} // reference for drawing
+          onMouseDown={startDrawing} // start drawing
+          onMouseMove={draw} // draw while moving
+          onMouseUp={stopDrawing} // stop drawing
+          onMouseLeave={stopDrawing} // stop if mouse leaves canvas
           className="w-full h-full bg-white cursor-crosshair border border-slate-700 rounded"
         />
       </div>
