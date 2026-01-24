@@ -126,6 +126,7 @@ CREATE TABLE IF NOT EXISTS notifications (
   FOREIGN KEY (recipient_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
 -- Documents table
 CREATE TABLE IF NOT EXISTS documents (
   id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -140,6 +141,7 @@ CREATE TABLE IF NOT EXISTS documents (
   FOREIGN KEY (last_edited_by_id) REFERENCES users(id),
   FOREIGN KEY (project_id) REFERENCES projects(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 -- Files table
 CREATE TABLE IF NOT EXISTS files (
