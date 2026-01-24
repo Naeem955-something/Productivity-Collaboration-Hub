@@ -5,7 +5,7 @@ import { PaintBrushIcon, TrashIcon, ArrowUturnLeftIcon, PencilIcon } from '@hero
 interface DrawingPoint {
   x: number
   y: number
-  type: 'line' | 'rect' | 'circle' | 'text'
+  type: 'line' | 'rect' | 'circle' | 'text'fffs
 }
 
 export default function Whiteboard() {
