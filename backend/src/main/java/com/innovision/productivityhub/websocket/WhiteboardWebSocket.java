@@ -1,40 +1,45 @@
-package com.innovision.model;
+package com.innovision.websocket;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import com.innovision.model.WhiteboardSession;
+import com.innovision.service.WhiteboardService;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.stereotype.Controller;
 
-public class WhiteboardSession {
+@Controller
+public class WhiteboardWebSocket {
 
-    private Long projectId;
-    private List<String> events; // JSON draw events
-    private LocalDateTime lastUpdated;
+    private final WhiteboardService whiteboardService;
 
-    public WhiteboardSession(Long projectId) {
-        this.projectId = projectId;
-        this.events = new CopyOnWriteArrayList<>();
-        this.lastUpdated = LocalDateTime.now();
+    public WhiteboardWebSocket(WhiteboardService whiteboardService) {
+        this.whiteboardService = whiteboardService;
     }
 
-    public Long getProjectId() {
-        return projectId;
+    /**
+     * Receive drawing events from client
+     * URL: /app/whiteboard/{projectId}
+     */
+    @MessageMapping("/whiteboard/{projectId}")
+    @SendTo("/topic/whiteboard/{projectId}")
+    public WhiteboardSession handleDrawEvent(
+            @DestinationVariable Long projectId,
+            String eventJson
+    ) {
+        whiteboardService.addEvent(projectId, eventJson);
+        return whiteboardService.getSession(projectId);
     }
 
-    public List<String> getEvents() {
-        return events;
-    }
-
-    public void addEvent(String event) {
-        this.events.add(event);
-        this.lastUpdated = LocalDateTime.now();
-    }
-
-    public void clearBoard() {
-        this.events.clear();
-        this.lastUpdated = LocalDateTime.now();
-    }
-
-    public LocalDateTime getLastUpdated() {
-        return lastUpdated;
+    /**
+     * Clear board event
+     * URL: /app/whiteboard/{projectId}/clear
+     */
+    @MessageMapping("/whiteboard/{projectId}/clear")
+    @SendTo("/topic/whiteboard/{projectId}")
+    public WhiteboardSession clearBoard(
+            @DestinationVariable Long projectId
+    ) {
+        whiteboardService.clearBoard(projectId);
+        return whiteboardService.getSession(projectId);
     }
 }
