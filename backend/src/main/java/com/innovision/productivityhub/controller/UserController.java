@@ -1,5 +1,3 @@
-package com.innovision.productivityhub.controller;
-
 import com.innovision.productivityhub.dto.PasswordChangeRequest;
 import com.innovision.productivityhub.dto.UserProfileUpdateRequest;
 import com.innovision.productivityhub.model.User;
@@ -90,3 +88,4 @@ public class UserController {
         return ResponseEntity.ok(userService.updatePreferences(id, preferences));
     }
 }
+
