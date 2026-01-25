@@ -1,5 +1,3 @@
-package com.innovision.productivityhub.controller;
-
 import com.innovision.productivityhub.service.DashboardService;
 import java.util.List;
 import java.util.Map;
