@@ -49,7 +49,6 @@ export default function Landing() {
                   <div className="font-semibold">{item.title}</div>
                   <p className="text-sm text-slate-400">{item.body}</p>
                 </div>
-              ))}
             </div>
           </div>
           <div className="card p-6 bg-gradient-to-br from-white/5 to-primary/5 border-primary/10 shadow-2xl">
@@ -94,3 +93,4 @@ export default function Landing() {
     </div>
   )
 }
+
