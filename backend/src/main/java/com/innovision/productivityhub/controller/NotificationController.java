@@ -1,5 +1,3 @@
-package com.innovision.productivityhub.controller;
-
 import com.innovision.productivityhub.dto.NotificationRequest;
 import com.innovision.productivityhub.model.Notification;
 import com.innovision.productivityhub.model.NotificationType;
