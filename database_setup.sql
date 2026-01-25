@@ -67,7 +67,6 @@ CREATE TABLE IF NOT EXISTS tasks (
   status ENUM('TODO', 'IN_PROGRESS', 'REVIEW', 'DONE') DEFAULT 'TODO',
   FOREIGN KEY (project_id) REFERENCES projects(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- Task Assignees (Many-to-Many)
 CREATE TABLE IF NOT EXISTS task_assignees (
   task_id BIGINT NOT NULL,
@@ -76,14 +75,12 @@ CREATE TABLE IF NOT EXISTS task_assignees (
   FOREIGN KEY (task_id) REFERENCES tasks(id),
   FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- Task Tags
 CREATE TABLE IF NOT EXISTS task_tags (
   task_id BIGINT NOT NULL,
   tags VARCHAR(255),
   FOREIGN KEY (task_id) REFERENCES tasks(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 -- Goals table
 CREATE TABLE IF NOT EXISTS goals (
   id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
